@@ -25,6 +25,7 @@ import mysip as mysip
 import restc
 from myglobs import *
 import splash
+import sqlite3 as sqlite
 
 common_objects['current_call'] = None
 
