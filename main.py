@@ -13,6 +13,7 @@ import sys
 import json
 import httplib2 #installed manually
 from Tkinter import *
+import tkMessageBox
 import ttk
 import pjsua as pj
 import _pjsua
@@ -82,6 +83,9 @@ with splash.SplashScreen(root, 'images/splash.gif', 3):
    http = httplib2.Http(".cache", disable_ssl_certificate_validation=True)
    http.add_credentials(conf_params['http_user'], conf_params['http_pass'])
    data = restc.get_rest_data(http, url_ext, url_int)
+   
+   if data['status1'] != 200 or data['status2'] != 200:
+      tkMessageBox.showwarning("Warning", "One or more Elastix Web services could not be retrieved")
 
    wnotebook_main = ttk.Notebook(root)
    wmf1 = ttk.Frame(wnotebook_main)
