@@ -79,7 +79,7 @@ with splash.SplashScreen(root, 'images/splash.gif', 3):
    calltext_widget = common_objects['myView'].get_calltext_widget()
 
    #Connection to HOST
-   http = httplib2.Http()
+   http = httplib2.Http(".cache", disable_ssl_certificate_validation=True)
    http.add_credentials(conf_params['http_user'], conf_params['http_pass'])
    data = restc.get_rest_data(http, url_ext, url_int)
 
