@@ -25,12 +25,11 @@ import mysip as mysip
 import restc
 from myglobs import *
 import splash
-import sqlite3 as sqlite
 
 common_objects['current_call'] = None
 
 root = Tk()
-root.title("Elastix Communicator")
+root.title("Elastiphone")
 #ttk.Style().configure("TLabel", background="yellow")
 #ttk.Style().configure("B.TFrame", background="yellow")
 #s.configure('EComm.TFrame', background='yellow')

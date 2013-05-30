@@ -1,6 +1,7 @@
 import pjsua as pj
 import _pjsua
 import threading
+import sqlite3 as sqlite
 from myglobs import *
 
 def sip_registration(lib, conf_params):
@@ -130,12 +131,48 @@ class MyCallCallback(pj.CallCallback):
    # Notification when call state has changed
    def on_state(self):
       global common_objects
+      
       print "Call with", self.call.info().remote_uri,
       print "is", self.call.info().state_text,
       print "last code =", self.call.info().last_code,
       print "(" + self.call.info().last_reason + ")"
 
       if self.call.info().state == pj.CallState.DISCONNECTED:
+         # Here i will record the call history
+         print "................"
+         print "LOCAL URI", self.call.info().uri
+         print "LOCAL CONTACT", self.call.info().contact
+         print "REMOTE URI", self.call.info().remote_uri
+         print "REMOTE CONTACT", self.call.info().remote_contact
+         print "SIP CALL ID", self.call.info().sip_call_id
+         print "STATE", self.call.info().state
+         print "STATE TEXT", self.call.info().state_text
+         print "LAST CODE", self.call.info().last_code
+         print "LAST REASON", self.call.info().last_reason
+         print "MEDIA STATE", self.call.info().media_state
+         print "MEDIA DIR", self.call.info().media_dir
+         print "CONF SLOT", self.call.info().conf_slot
+         print "CALL TIME", self.call.info().call_time
+         print "TOTAL TIME", self.call.info().total_time
+         print "................"
+         
+         con=None
+         try:
+            con = sqlite.connect('/Users/egar/Documents/Repos/elastiphone/db/history.db')
+            cur = con.cursor()
+            buf = "INSERT INTO call_info (id, local_uri, local_contact, remote_uri, remote_contact, sip_call_id, state, state_text, last_code, last_reason, media_state, media_dir, conf_slot, call_time, total_time) values (NULL,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')" % (self.call.info().uri, self.call.info().contact, self.call.info().remote_uri, self.call.info().remote_contact, self.call.info().sip_call_id, self.call.info().state, self.call.info().state_text, self.call.info().last_code, self.call.info().last_reason, self.call.info().media_state, self.call.info().media_dir, self.call.info().conf_slot, self.call.info().call_time, self.call.info().total_time)
+
+            cur.execute(buf)
+            con.commit()
+            print buf
+            
+         except lite.Error, e:
+            print "Error %s:" % e.args[0]
+    
+         finally:
+            if con:
+               con.close()
+                  
          common_objects['current_call'] = None
          if common_objects['myView'].wwindow_current_call:
             common_objects['myView'].wwindow_current_call.destroy()
